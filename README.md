@@ -22,18 +22,18 @@ Also let you know if inventory becomes zero again so you don't jump out of bed w
 python stock.py <model> <zipcode> <emails or phone numbers delimited by comma> <check interval in seconds> <your gmail account if you want email alerts> <your gmail password if you want email alerts>
 ```
 
-###Example:
+### Example:
 
-Every 5 seconds, check availability of `Apple Watch Stainless Steel Case with White Sport Band` near zipcode 22102 and send email alert to `recipient@example.com` using gmail account `sender@gmail.com`.
-
-```
-python /path/to/stock.py "MNPR2LL/A" "22102" "recipient@example.com" 5 sender@gmail.com sender_password
-```
-
-Every 10 seconds, check availability of `iPhone 7 Plus T-Mobile Jet Black 128GB` near zipcode 22102 and send sms alert to `2021234567`.
+Every 5 seconds, check availability of `Apple Watch Stainless Steel Case with White Sport Band` near zipcode 12345 and send email alert to `recipient@example.com` using gmail account `sender@gmail.com`.
 
 ```
-python /path/to/stock.py "MN5L2LL/A" "22102" "2021234567" 10
+python /path/to/stock.py "MNPR2LL/A" "12345" "recipient@example.com" 5 sender@gmail.com sender_password
+```
+
+Every 10 seconds, check availability of `iPhone 7 Plus T-Mobile Jet Black 128GB` near zipcode 12345 and send sms alert to `1234567890`.
+
+```
+python /path/to/stock.py "MN5L2LL/A" "12345" "1234567890" 10
 ```
 
 Model number is a unique identifier, U.S. models end with "LL/*". (https://www.theiphonewiki.com/wiki/Model_Regions)
@@ -52,4 +52,12 @@ To find out the model number for a specific product:
 
 For a complete list: http://www.everyi.com/
 
+### Docker Example:
 
+```
+docker run --name my-checker-email -e MODEL="MN5L2LL/A" -e ZIP=12345 -e DEST=recipient@example.com -e SEC=1 -e LOGIN=sender@gmail.com -e PASS=sender_password yuha0/applechecker
+```
+
+```
+docker run --name my-checker-sms -e MODEL="MNPR2LL/A" -e ZIP="12345" -e DEST="1234567890" -e SEC=5 yuha0/applechecker
+```
