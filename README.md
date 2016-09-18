@@ -2,7 +2,7 @@
 
 > Check Apple Store Inventory
 
-Keep checking Apple Store inventory and send you alert when nearby store have your desired device in stock.
+Keep checking Apple Store inventory and send you alert when nearby stores have your desired device in stock.
 Also let you know if inventory becomes zero again so you don't jump out of bed when it is already too late.
 
 * [Prerequisites](#prerequisites)
