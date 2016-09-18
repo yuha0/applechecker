@@ -1,6 +1,5 @@
 FROM ubuntu:14.04
 
-WORKDIR /usr/local/bin
 COPY stock.py .
 RUN apt-get update && apt-get install -y \
     python \
