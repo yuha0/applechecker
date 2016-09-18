@@ -12,7 +12,7 @@ Also let you know if inventory becomes zero again so you don't jump out of bed w
 
 * `pip install requests`
 
-* A gmail account if want email alert.
+* A gmail account if want email alert. (Got refused by Gmail because the app is insecure? [Enable 2-Step Verification](https://support.google.com/accounts/answer/185839?hl=en) and [generate an App password](https://support.google.com/accounts/answer/185833?hl=en) for it. Or follow [this instruction](https://support.google.com/accounts/answer/6010255?hl=en) to allow insecure login)
 
 * For SMS alert, the script uses the free service provided by [TextBelt](http://textbelt.com/), which has some limitations like "IP addresses are limited to 75 texts per day" and "Phone numbers are limited to 3 texts every 3 minutes". Check their page for details.
 
