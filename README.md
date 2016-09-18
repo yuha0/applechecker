@@ -38,19 +38,9 @@ python /path/to/stock.py "MN5L2LL/A" "12345" "1234567890" 10
 
 Model number is a unique identifier, U.S. models end with "LL/*". (https://www.theiphonewiki.com/wiki/Model_Regions)
 
-To find out the model number for a specific product:
+Check your model number here: http://www.everyi.com/
 
-* Apple Watch: model number hides in query string in URL of the item page.
-
-    Example:
-    `http://www.apple.com/shop/buy-watch/apple-watch/silver-stainless-steel-stainless-steel-sport-band?preSelect=true&product=`**`MNPR2LL/A`**`&step=detail#`
-
-* iPhone: inspect the item page and look for a request to `http://www.apple.com/shop/delivery-message?`
-
-    Example:
-    `http://www.apple.com/shop/delivery-message?parts.0=`**`MN5L2LL%2FA`**`&cppart=TMOBILE%2FUS&_=1474171709609`
-
-For a complete list: http://www.everyi.com/
+To verify, visit `http://store.apple.com/xc/product/<model numer>` and see if it shows the product you want.
 
 ### Docker Example:
 
