@@ -24,7 +24,11 @@ def check_stock(model, zip_, dest, sec=5, login=None, pwd=None):
             stores=', '.join([store.encode('utf-8') for store in good_stores])
                     if good_stores else "None")
 
-        stores = requests.get(URL, params=params).json()['body']['stores'][:8]
+        try:
+            stores = requests.get(URL, params=params).json()['body']['stores'][:8]
+        except (ValueError, KeyError):
+            print "Bad response from server..."
+            continue
         for store in stores:
             sname = store['storeName']
             item = store['partsAvailability'][model]['storePickupProductTitle']
