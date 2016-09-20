@@ -10,11 +10,13 @@ URL = "http://www.apple.com/shop/retail/pickup-message"
 BUY = "http://store.apple.com/xc/product/"
 SMS = "http://textbelt.com/text"
 
+DATEFMT = "%m/%d/%Y %H:%M:%S"
+
 def check_stock(model, zipcode, dest, sec=5, login=None, pwd=None):
     good_stores = []
     my_alert = Alert(dest, login, pwd)
     initmsg = "{0} start tracking {1} in {2}. Alert will sent to {3}".format(
-        time.strftime("%m/%d/%Y %H:%M:%S"), model, zipcode, dest)
+        time.strftime(DATEFMT), model, zipcode, dest)
     print initmsg
     my_alert.send(initmsg)
     params = {'parts.0': model,
@@ -25,7 +27,7 @@ def check_stock(model, zipcode, dest, sec=5, login=None, pwd=None):
         if good_stores:
             print "=================================="
             print "[{current}] Avaiable: {stores}".format(
-                current=time.strftime("%m/%d/%Y %H:%M:%S"),
+                current=time.strftime(DATEFMT),
                 stores=', '.join([s.encode('utf-8') for s in good_stores])
                         if good_stores else "None")
 
@@ -44,7 +46,7 @@ def check_stock(model, zipcode, dest, sec=5, login=None, pwd=None):
                     good_stores.append(sname)
                     msg = "Go!! {store} has {item}!! {buy}{model}".format(
                         store=sname, item=item, buy=BUY, model=model)
-                    print "{0} {1}".format(time.strftime("%m/%d/%Y %H:%M:%S"),
+                    print "{0} {1}".format(time.strftime(DATEFMT),
                                            msg)
                     my_alert.send(msg)
             else:
@@ -52,7 +54,7 @@ def check_stock(model, zipcode, dest, sec=5, login=None, pwd=None):
                     good_stores.remove(sname)
                     msg = "Oops all {item} in {store} are gone :( ".format(
                         item=item, store=sname)
-                    print "{0} {1}".format(time.strftime("%m/%d/%Y %H:%M:%S"),
+                    print "{0} {1}".format(time.strftime(DATEFMT),
                                            msg)
                     my_alert.send(msg)
 
@@ -90,7 +92,7 @@ class Alert(object):
                 sys.exit(2)
         except gaierror:
             print "Couldn't reach TextBelt"
-        if response.json()['success'] is not True:
+        if not response.json()['success']:
             print "Failed to send SMS"
             sys.exit(2)
 
