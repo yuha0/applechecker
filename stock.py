@@ -35,7 +35,7 @@ def check_stock(model, zipcode, dest, sec=5, login=None, pwd=None):
             stores = requests.get(URL, params=params) \
                     .json()['body']['stores'][:8]
         except (ValueError, KeyError, gaierror):
-            print "Bad response from server..."
+            print "Failed to query Apple Store"
             continue
         for store in stores:
             sname = store['storeName']
@@ -44,18 +44,16 @@ def check_stock(model, zipcode, dest, sec=5, login=None, pwd=None):
                         == "available":
                 if sname not in good_stores:
                     good_stores.append(sname)
-                    msg = "Go!! {store} has {item}!! {buy}{model}".format(
+                    msg = "Found it! {store} has {item}!! {buy}{model}".format(
                         store=sname, item=item, buy=BUY, model=model)
-                    print "{0} {1}".format(time.strftime(DATEFMT),
-                                           msg)
+                    print "{0} {1}".format(time.strftime(DATEFMT), msg)
                     my_alert.send(msg)
             else:
                 if sname in good_stores:
                     good_stores.remove(sname)
                     msg = "Oops all {item} in {store} are gone :( ".format(
                         item=item, store=sname)
-                    print "{0} {1}".format(time.strftime(DATEFMT),
-                                           msg)
+                    print "{0} {1}".format(time.strftime(DATEFMT), msg)
                     my_alert.send(msg)
 
 class Alert(object):
@@ -89,7 +87,6 @@ class Alert(object):
                 'number': self.dest, 'message': message}).json()
             if not response['success']:
                 print response['message']
-                sys.exit(2)
         except gaierror:
             print "Couldn't reach TextBelt"
 
