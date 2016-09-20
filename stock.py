@@ -87,14 +87,11 @@ class Alert(object):
         try:
             response = requests.post(SMS, data={
                 'number': self.dest, 'message': message}).json()
-            if response['success'] is not True:
+            if not response['success']:
                 print response['message']
                 sys.exit(2)
         except gaierror:
             print "Couldn't reach TextBelt"
-        if not response.json()['success']:
-            print "Failed to send SMS"
-            sys.exit(2)
 
 if __name__ == '__main__':
     check_stock(*sys.argv[1:])
