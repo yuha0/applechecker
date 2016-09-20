@@ -15,7 +15,7 @@ DATEFMT = "%m/%d/%Y %H:%M:%S"
 def check_stock(model, zipcode, dest, sec=5, login=None, pwd=None):
     good_stores = []
     my_alert = Alert(dest, login, pwd)
-    initmsg = "{0} start tracking {1} in {2}. Alert will sent to {3}".format(
+    initmsg = "[{0}]start tracking {1} in {2}. Alert will be sent to {3}".format(
         time.strftime(DATEFMT), model, zipcode, dest)
     print initmsg
     my_alert.send(initmsg)
