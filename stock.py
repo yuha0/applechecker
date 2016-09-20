@@ -50,11 +50,10 @@ def check_stock(model, zipcode, dest, sec=5, login=None, pwd=None):
             else:
                 if sname in good_stores:
                     good_stores.remove(sname)
-                    msg = "Oops all {item} in {store} are gone :( ".format(
-                        item=item, store=sname)
-                    print "{0} {1}".format(time.strftime("%m/%d/%Y %H:%M:%S"),
-                                           msg)
-                    my_alert.send(msg)
+                msg = "Oops all {item} in {store} are gone :( ".format(
+                    item=item, store=sname)
+                print "{0} {1}".format(time.strftime("%m/%d/%Y %H:%M:%S"),
+                                       msg)
 
 class Alert(object):
     def __init__(self, dest, login=None, password=None):
