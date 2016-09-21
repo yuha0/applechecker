@@ -23,14 +23,6 @@ def check_stock(model, zipcode, dest, sec=5, login=None, pwd=None):
               'location': zipcode}
 
     while True:
-        time.sleep(int(sec))
-        if good_stores:
-            print "=================================="
-            print "[{current}] Avaiable: {stores}".format(
-                current=time.strftime(DATEFMT),
-                stores=', '.join([s.encode('utf-8') for s in good_stores])
-                        if good_stores else "None")
-
         try:
             stores = requests.get(URL, params=params) \
                     .json()['body']['stores'][:8]
@@ -55,6 +47,17 @@ def check_stock(model, zipcode, dest, sec=5, login=None, pwd=None):
                         item=item, store=sname)
                     print "{0} {1}".format(time.strftime(DATEFMT), msg)
                     my_alert.send(msg)
+
+        if good_stores:
+            print "=================================="
+            print "[{current}] Avaiable: {stores}".format(
+                current=time.strftime(DATEFMT),
+                stores=', '.join([s.encode('utf-8') for s in good_stores])
+                        if good_stores else "None")
+        else:
+            print "Checked, but no stock found"
+
+        time.sleep(int(sec))
 
 class Alert(object):
     def __init__(self, dest, login=None, password=None):
