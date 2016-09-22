@@ -16,7 +16,7 @@ LOADING = ['-', '\\', '|', '/']
 def main(model, zipcode, dest, sec=5, login=None, pwd=None):
     good_stores = []
     my_alert = Alert(dest, login, pwd)
-    initmsg = ("[{0}]start tracking {1} in {2}."
+    initmsg = ("[{0}]start tracking {1} in {2}. "
                "Alert will be sent to {3}").format(time.strftime(DATEFMT),
                                                    model, zipcode, dest)
     print initmsg
@@ -52,16 +52,16 @@ def main(model, zipcode, dest, sec=5, login=None, pwd=None):
                         == "available":
                 if sname not in good_stores:
                     good_stores.append(sname)
-                    msg = "Found it! {store} has {item}!! {buy}{model}".format(
+                    msg = u"Found it! {store} has {item}! {buy}{model}".format(
                         store=sname, item=item, buy=BUY, model=model)
-                    print "{0} {1}".format(time.strftime(DATEFMT), msg)
+                    print u"{0} {1}".format(time.strftime(DATEFMT), msg)
                     my_alert.send(msg)
             else:
                 if sname in good_stores:
                     good_stores.remove(sname)
-                    msg = "Oops all {item} in {store} are gone :( ".format(
+                    msg = u"Oops all {item} in {store} are gone :( ".format(
                         item=item, store=sname)
-                    print "{0} {1}".format(time.strftime(DATEFMT), msg)
+                    print u"{0} {1}".format(time.strftime(DATEFMT), msg)
                     my_alert.send(msg)
 
         if good_stores:
