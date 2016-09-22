@@ -28,6 +28,7 @@ def check_stock(model, zipcode, dest, sec=5, login=None, pwd=None):
                     .json()['body']['stores'][:8]
         except (ValueError, KeyError, gaierror):
             print "Failed to query Apple Store"
+            time.sleep(int(sec))
             continue
         for store in stores:
             sname = store['storeName']
@@ -36,7 +37,7 @@ def check_stock(model, zipcode, dest, sec=5, login=None, pwd=None):
                         == "available":
                 if sname not in good_stores:
                     good_stores.append(sname)
-                    msg = "Found it! {store} has {item}!! {buy}{model}".format(
+                    msg = "\rFound it! {store} has {item}!! {buy}{model}".format(
                         store=sname, item=item, buy=BUY, model=model)
                     print "{0} {1}".format(time.strftime(DATEFMT), msg)
                     my_alert.send(msg)
@@ -54,8 +55,6 @@ def check_stock(model, zipcode, dest, sec=5, login=None, pwd=None):
                 current=time.strftime(DATEFMT),
                 stores=', '.join([s.encode('utf-8') for s in good_stores])
                         if good_stores else "None")
-        else:
-            print "Checked, but no stock found"
 
         time.sleep(int(sec))
 
