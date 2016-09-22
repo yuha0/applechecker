@@ -11,18 +11,32 @@ BUY = "http://store.apple.com/xc/product/"
 SMS = "http://textbelt.com/text"
 
 DATEFMT = "%m/%d/%Y %H:%M:%S"
+LOADING = ['-', '\\', '|', '/']
 
-def check_stock(model, zipcode, dest, sec=5, login=None, pwd=None):
+def main(model, zipcode, dest, sec=5, login=None, pwd=None):
     good_stores = []
     my_alert = Alert(dest, login, pwd)
-    initmsg = "[{0}]start tracking {1} in {2}. Alert will be sent to {3}".format(
-        time.strftime(DATEFMT), model, zipcode, dest)
+    initmsg = ("[{0}]start tracking {1} in {2}."
+               "Alert will be sent to {3}").format(time.strftime(DATEFMT),
+                                                   model, zipcode, dest)
     print initmsg
     my_alert.send(initmsg)
     params = {'parts.0': model,
               'location': zipcode}
+    sec = int(sec)
+    i, cnt = 0, sec
 
     while True:
+        if cnt < sec:
+            # loading sign refreashes every second
+            sys.stdout.write('\rChecking...{}'.format(LOADING[i]))
+            sys.stdout.flush()
+            i = i + 1 if i < 3 else 0
+            cnt += 1
+            time.sleep(1)
+            continue
+        cnt = 0
+
         try:
             stores = requests.get(URL, params=params) \
                     .json()['body']['stores'][:8]
@@ -30,6 +44,7 @@ def check_stock(model, zipcode, dest, sec=5, login=None, pwd=None):
             print "Failed to query Apple Store"
             time.sleep(int(sec))
             continue
+
         for store in stores:
             sname = store['storeName']
             item = store['partsAvailability'][model]['storePickupProductTitle']
@@ -37,7 +52,7 @@ def check_stock(model, zipcode, dest, sec=5, login=None, pwd=None):
                         == "available":
                 if sname not in good_stores:
                     good_stores.append(sname)
-                    msg = "\rFound it! {store} has {item}!! {buy}{model}".format(
+                    msg = "Found it! {store} has {item}!! {buy}{model}".format(
                         store=sname, item=item, buy=BUY, model=model)
                     print "{0} {1}".format(time.strftime(DATEFMT), msg)
                     my_alert.send(msg)
@@ -50,13 +65,10 @@ def check_stock(model, zipcode, dest, sec=5, login=None, pwd=None):
                     my_alert.send(msg)
 
         if good_stores:
-            print "=================================="
             print "[{current}] Avaiable: {stores}".format(
                 current=time.strftime(DATEFMT),
                 stores=', '.join([s.encode('utf-8') for s in good_stores])
                         if good_stores else "None")
-
-        time.sleep(int(sec))
 
 class Alert(object):
     def __init__(self, dest, login=None, password=None):
@@ -93,4 +105,4 @@ class Alert(object):
             print "Couldn't reach TextBelt"
 
 if __name__ == '__main__':
-    check_stock(*sys.argv[1:])
+    main(*sys.argv[1:])
