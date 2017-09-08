@@ -1,10 +1,6 @@
-FROM ubuntu:14.04
+FROM python:alpine
 
-COPY stock.py .
-RUN apt-get update && apt-get install -y \
-    python \
-    python-pip \
- && pip install requests \
- && rm -rf /var/lib/apt/lists/*
+ADD check.py .
+RUN pip install --no-cache-dir requests
 
-CMD python -u stock.py $MODEL $ZIP $DEST $SEC $LOGIN $PASS
+CMD python check.py $MODEL $ZIP $SEC $DEST $LOGIN $PASS
