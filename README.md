@@ -19,7 +19,7 @@ Also let you know if inventory becomes zero again so you don't jump out of bed w
 ## Usage
 
 ```
-python stock.py <model> <zipcode> <emails or phone numbers delimited by comma> <check interval in seconds> <your gmail account if you want email alerts> <your gmail password if you want email alerts>
+python check.py <model> <zipcode> <emails or phone numbers delimited by comma> <check interval in seconds> <your gmail account if you want email alerts> <your gmail password if you want email alerts>
 ```
 
 ### Example:
@@ -27,13 +27,13 @@ python stock.py <model> <zipcode> <emails or phone numbers delimited by comma> <
 Every 5 seconds, check availability of `Apple Watch Stainless Steel Case with White Sport Band` near zipcode 12345 and send email alert to `recipient@example.com` using gmail account `sender@gmail.com`.
 
 ```
-python /path/to/stock.py "MNPR2LL/A" "12345" "recipient@example.com" 5 sender@gmail.com sender_password
+python /path/to/check.py "MNPR2LL/A" "12345" "recipient@example.com" 5 sender@gmail.com sender_password
 ```
 
 Every 10 seconds, check availability of `iPhone 7 Plus T-Mobile Jet Black 128GB` near zipcode 12345 and send sms alert to `1234567890`.
 
 ```
-python /path/to/stock.py "MN5L2LL/A" "12345" "1234567890" 10
+python /path/to/check.py "MN5L2LL/A" "12345" "1234567890" 10
 ```
 
 Model number is a unique identifier, U.S. models end with "LL/*". (https://www.theiphonewiki.com/wiki/Model_Regions)
