@@ -3,8 +3,6 @@ from __future__ import print_function
 import sys
 import time
 import json
-import smtplib
-from email.mime.text import MIMEText
 from socket import gaierror
 try:
     # python 3
@@ -14,7 +12,7 @@ except ImportError:
     # python2
     from urllib import urlopen
     from urllib import urlencode
-
+from Alert import SmtpAlert
 
 # only tested for US stores and US text message
 URL = "http://www.apple.com/shop/retail/pickup-message"
@@ -24,47 +22,11 @@ DATEFMT = "[%m/%d/%Y-%H:%M:%S]"
 LOADING = ['-', '\\', '|', '/']
 
 
-class Alert(object):
-    def __init__(self, dest=None, login=None, credential=None):
-        if not dest:
-            self.send = lambda x: None
-            return
-        self.dest = dest
-        self.login = login
-        self.password = credential
-        self.send = self._print_ahead(self.send_smtp)
-
-    def _print_ahead(self, method):
-        def wrapper(msgbody):
-            print(msgbody)
-            method(msgbody)
-        return wrapper
-
-    def send_smtp(self, msgbody):
-        message = MIMEText(msgbody, _charset="UTF-8")
-        message['From'] = self.login
-        message['To'] = self.dest
-        message['Subject'] = "Apple Stock Alert"
-
-        try:
-            mailer = smtplib.SMTP('smtp.gmail.com:587')
-        except gaierror:
-            print("Couldn't reach Gmail server")
-            return
-        mailer.ehlo()
-        mailer.starttls()
-        mailer.ehlo()
-        mailer.login(self.login, self.password)
-        mailer.sendmail(self.login, self.dest, message.as_string())
-        mailer.close()
-
-
-def main(model, zipcode, sec=5, dest=None, login=None, pwd=None,):
+def main(model, zipcode, sec=5, *alert_params):
     good_stores = []
-    my_alert = Alert(dest, login, pwd)
-    initmsg = ("{0} Start tracking {1} in {2}. "
-               "Alert will be sent to {3}").format(time.strftime(DATEFMT),
-                                                   model, zipcode, dest)
+    my_alert = SmtpAlert(*alert_params)
+    initmsg = ("{0} Start tracking {1} in {2}. Alert parameters: {3}").format(
+        time.strftime(DATEFMT), model, zipcode, alert_params)
     my_alert.send(initmsg)
     params = {'parts.0': model,
               'location': zipcode}
