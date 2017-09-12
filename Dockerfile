@@ -1,6 +1,6 @@
 FROM python:alpine
 
-ADD check.py .
-RUN pip install --no-cache-dir requests
+ADD * /work/
 
-CMD python check.py $MODEL $ZIP $SEC $DEST $LOGIN $PASS
+WORKDIR /work/
+ENTRYPOINT ["python", "check.py"]

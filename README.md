@@ -10,11 +10,7 @@ Also let you know if inventory becomes zero again so you don't jump out of bed w
 
 ## Prerequisites
 
-* `pip install requests`
-
 * A gmail account if want email alert. (Got refused by Gmail because the app is insecure? [Enable 2-Step Verification](https://support.google.com/accounts/answer/185839?hl=en) and [generate an App password]() for it. Or follow [this instruction](https://support.google.com/accounts/answer/6010255?hl=en) to allow insecure login)
-
-* For SMS alert, the script uses the free service provided by [TextBelt](http://textbelt.com/), which has some limitations like "IP addresses are limited to 75 texts per day" and "Phone numbers are limited to 3 texts every 3 minutes". Check their page for details.
 
 ## Usage
 
@@ -28,12 +24,6 @@ Every 5 seconds, check availability of `Apple Watch Stainless Steel Case with Wh
 
 ```
 python /path/to/check.py "MNPR2LL/A" "12345" 5 recipient@example.com sender@gmail.com sender_password
-```
-
-Every 10 seconds, check availability of `iPhone 7 Plus T-Mobile Jet Black 128GB` near zipcode 12345 and send sms alert to `1234567890`.
-
-```
-python /path/to/check.py "MN5L2LL/A" "12345" 10 "1234567890"
 ```
 
 Model number is a unique identifier, U.S. models end with "LL/*". (https://www.theiphonewiki.com/wiki/Model_Regions)
@@ -55,9 +45,11 @@ To verify, visit `http://store.apple.com/xc/product/<model numer>` and see if it
 ### Docker Example:
 
 ```
-docker run -d --name my-checker-email -e MODEL="MN5L2LL/A" -e ZIP=12345 -e DEST=recipient@example.com -e SEC=1 -e LOGIN=sender@gmail.com -e PASS=sender_password yuha0/applechecker
+# foreground
+docker run --rm -t yuha0/applechecker "MNPR2LL/A" "12345"  5 recipient@example.com sender@gmail.com "ekffyblvhbyhpowd"
 ```
 
 ```
-docker run -d --name my-checker-sms -e MODEL="MNPR2LL/A" -e ZIP="12345" -e DEST="1234567890" -e SEC=5 yuha0/applechecker
+# background
+docker run -d --restart always yuha0/applechecker "MNPR2LL/A" "12345" 5 recipient@example.com sender@gmail.com "ekffyblvhbyhpowd"
 ```
