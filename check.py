@@ -14,41 +14,57 @@ except ImportError:
     from urllib import urlencode
 from Alert import SmtpAlert
 
-# only tested for US stores and US text message
+# only tested for US stores
 URL = "http://www.apple.com/shop/retail/pickup-message"
 BUY = "http://store.apple.com/xc/product/"
 
 DATEFMT = "[%m/%d/%Y-%H:%M:%S]"
 LOADING = ['-', '\\', '|', '/']
 
+INPUT_ERRORS = {"Products Invalid or not buyable",
+                "Invalid zip code or city/state."}
+
+INITMSG = "{} Start monitoring {} inventory in area {}."
+
 
 def main(model, zipcode, sec=5, *alert_params):
     good_stores = []
     my_alert = SmtpAlert(*alert_params)
-    initmsg = ("{0} Start tracking {1} in {2}. Alert parameters: {3}").format(
-        time.strftime(DATEFMT), model, zipcode, alert_params)
-    my_alert.send(initmsg)
     params = {'parts.0': model,
               'location': zipcode}
     sec = int(sec)
     i, cnt = 0, sec
+    init = True
     while True:
         if cnt < sec:
-            # loading sign refreashes every second
+            # loading sign refreshes every second
             print('Checking...{}'.format(LOADING[i]), end='\r')
-            sys.stdout.flush()
             i = i + 1 if i < 3 else 0
             cnt += 1
             time.sleep(1)
             continue
         cnt = 0
-
         try:
             response = urlopen(
                 "{}?{}".format(URL, urlencode(params)))
-            stores = json.load(response)['body']['stores'][:8]
+            json_body = json.load(response)['body']
+            stores = json_body['stores'][:8]
+            item = (stores[0]['partsAvailability']
+                    [model]['storePickupProductTitle'])
+            if init:
+                my_alert.send(INITMSG.format(
+                    time.strftime(DATEFMT), item, zipcode))
+                init = False
         except (ValueError, KeyError, gaierror) as reqe:
-            print("Failed to query Apple Store, details: {}".format(reqe))
+            error_msg = "Failed to query Apple Store, details: {}".format(reqe)
+            try:
+                error_msg = json_body['errorMessage']
+                if error_msg in INPUT_ERRORS:
+                    sys.exit(1)
+            except KeyError:
+                pass
+            finally:
+                print(error_msg)
             time.sleep(int(sec))
             continue
 
