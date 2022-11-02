@@ -50,7 +50,7 @@ def main(model, zipcode, sec=5, *alert_params):
             json_body = json.load(response)['body']
             stores = json_body['stores'][:8]
             item = (stores[0]['partsAvailability']
-                    [model]['storePickupProductTitle'])
+                    [model]['messageTypes']['regular']['storePickupProductTitle'])
             if init:
                 my_alert.send(INITMSG.format(
                     time.strftime(DATEFMT), item, zipcode))
@@ -70,7 +70,8 @@ def main(model, zipcode, sec=5, *alert_params):
 
         for store in stores:
             sname = store['storeName']
-            item = store['partsAvailability'][model]['storePickupProductTitle']
+            item = (stores[0]['partsAvailability']
+                    [model]['messageTypes']['regular']['storePickupProductTitle'])
             if store['partsAvailability'][model]['pickupDisplay'] \
                     == "available":
                 if sname not in good_stores:
